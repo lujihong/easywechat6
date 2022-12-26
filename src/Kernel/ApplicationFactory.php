@@ -66,7 +66,7 @@ class ApplicationFactory
         }
 
         //替换请求
-        if (method_exists($app, 'setRequestFromSymfonyRequest')) {
+        if ($symfonyRequest && method_exists($app, 'setRequestFromSymfonyRequest')) {
             $app->setRequestFromSymfonyRequest($symfonyRequest);
         }
 
@@ -88,16 +88,14 @@ class ApplicationFactory
 
     /**
      * 获取Request请求对象
-     * @return Request
+     * @return Request|null
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      */
-    private function getRequest(): Request
+    private function getRequest(): ?Request
     {
         if (!Context::has(ServerRequestInterface::class)) {
-            $req = new Request();
-            $req->headers = new HeaderBag();
-            return $req;
+            return null;
         }
 
         $request = $this->container->get(RequestInterface::class);
